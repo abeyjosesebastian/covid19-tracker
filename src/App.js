@@ -1,14 +1,14 @@
 import { useState, useEffect} from 'react'; 
-import { MenuItem,FormControl,Select, Card, CardContent } from '@material-ui/core';
+import { MenuItem,FormControl,Select, Card, CardContent, } from '@material-ui/core';
 import './App.css';
 import InfoBox from './InfoBox';
 import Map from './Map';
-
+import Table from './Table';
 function App() {
   const [countries,setCountries] = useState([]);
   const [country,setCountry] =useState('worldwide');
   const [countryInfo,setCountryInfo] = useState({});
-
+  const [tableData, setTableData] = useState([]);
   useEffect(() =>{
     fetch('https://disease.sh/v3/covid-19/all')
     .then(response =>response.json())
@@ -26,7 +26,7 @@ function App() {
           name: country.country,
           value: country.countryInfo.iso2,
         }))
-
+      setTableData(data);
       setCountries(countries);
       })
     }
@@ -41,17 +41,16 @@ function App() {
 
     const url = countryCode === 'worldwide' ? 
     'https://disease.sh/v3/covid-19/all' :
-    'https://disease.sh/v3/covid-19/countries/${countryCode}'
+    `https://disease.sh/v3/covid-19/countries/${countryCode}`;
 
-    await fetch('url')
+    await fetch(url)
     .then(response => response.json())
     .then(data => {
       setCountry(countryCode);
       setCountryInfo(data);
 
     })
-
-  };
+  }
 
   return (
     <div className="app">
@@ -83,9 +82,9 @@ function App() {
       </div>
       <Card className="app__right">
         <CardContent>
-          <h1>
-            dhkjsk
-          </h1>
+          <h3>Live Cases by Country</h3>
+          <Table  countries={tableData} />
+          <h3>Worldwide new Cases</h3>
         </CardContent>
               
       </Card>
